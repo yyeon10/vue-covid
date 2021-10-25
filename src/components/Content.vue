@@ -3,35 +3,57 @@
     <div class="item-wrap">
       <div class="item">
         <div class="label">확진자 수</div>
-        <div class="data">20000명</div>
+        <div class="data">{{ decideCnt }}명 ({{ compDecideCnt }})</div>
       </div>
       <div class="item">
         <div class="label">사망자 수</div>
-        <div class="data">20000명</div>
+        <div class="data">{{ deathCnt }}명 ({{ compDeathCnt }})</div>
       </div>
       <div class="item">
         <div class="label">치료중 환자 수</div>
-        <div class="data">20000명</div>
+        <div class="data">{{ careCnt }}명</div>
       </div>
       <div class="item">
         <div class="label">누적 확진률</div>
-        <div class="data">20000명</div>
+        <div class="data">{{ accDefRate }}%</div>
       </div>
     </div>
     <div class="date">
-      <span>2021년 10월 24일 20시 기준</span>
-      <img src="@/assets/refresh.png" alt="refresh" class="icon" />
+      <span>{{ date }} 00시 기준</span>
+      <img
+        src="@/assets/refresh.png"
+        alt="refresh"
+        class="icon"
+        @click="getCovidInfo"
+      />
     </div>
   </div>
 </template>
 
 <script>
 import axios from "axios";
+import dayjs from "dayjs";
 
 export default {
   name: "Content",
+  data() {
+    return {
+      accDefRate: 0,
+      careCnt: 0,
+      deathCnt: 0,
+      decideCnt: 0,
+      date: "",
+      compDeathCnt: 0,
+      compDecideCnt: 0,
+    };
+  },
   methods: {
-    getCovidInfo: async () => {
+    async getCovidInfo() {
+      const today = dayjs().format("YYYYMMDD");
+      const yesterday = dayjs(today)
+        .subtract(1, "day")
+        .format("YYYYMMDD");
+
       let url = "/openapi/service/rest/Covid19/getCovid19InfStateJson"; /*URL*/
       let queryParams =
         "?" +
@@ -41,22 +63,42 @@ export default {
       queryParams +=
         "&" + encodeURIComponent("pageNo") + "=" + encodeURIComponent("1"); /**/
       queryParams +=
-        "&" +
-        encodeURIComponent("numOfRows") +
-        "=" +
-        encodeURIComponent("10"); /**/
+        "&" + encodeURIComponent("numOfRows") + "=" + encodeURIComponent("10");
       queryParams +=
         "&" +
         encodeURIComponent("startCreateDt") +
         "=" +
-        encodeURIComponent("20200310"); /**/
+        encodeURIComponent(yesterday);
       queryParams +=
         "&" +
         encodeURIComponent("endCreateDt") +
         "=" +
-        encodeURIComponent("20200315"); /**/
-      const data = await axios.get(url + queryParams);
-      console.log(data);
+        encodeURIComponent(today);
+
+      const res = await axios.get(url + queryParams);
+      const data = res.data.response.body.items.item;
+      const todayData = data.find((item) => item.stateDt === parseInt(today));
+      const yesterdayData = data.find(
+        (item) => item.stateDt === parseInt(yesterday)
+      );
+
+      this.accDefRate = Number(todayData.accDefRate).toFixed(2);
+      this.careCnt = todayData.careCnt.toLocaleString();
+      this.deathCnt = todayData.deathCnt.toLocaleString();
+      this.decideCnt = todayData.decideCnt.toLocaleString();
+      this.date = dayjs(todayData.stateDt.toString()).format(
+        "YYYY년 MM월 DD일"
+      );
+      this.compDeathCnt =
+        todayData.deathCnt - yesterdayData.deathCnt > 0
+          ? `+${(todayData.deathCnt - yesterdayData.deathCnt).toLocaleString()}`
+          : (todayData.deathCnt - yesterdayData.deathCnt).toLocaleString();
+      this.compDecideCnt =
+        todayData.decideCnt - yesterdayData.decideCnt > 0
+          ? `+${(
+              todayData.decideCnt - yesterdayData.decideCnt
+            ).toLocaleString()}`
+          : (todayData.decideCnt - yesterdayData.decideCnt).toLocaleString();
     },
   },
   mounted() {
@@ -84,6 +126,10 @@ export default {
   cursor: pointer;
 }
 
+.icon:hover {
+  animation: rotate 1s;
+}
+
 .item-wrap {
   margin-top: 10px;
 }
@@ -91,12 +137,12 @@ export default {
 .item {
   box-sizing: border-box;
   width: 100%;
-  font-size: 40px;
+  font-size: 35px;
   font-weight: bold;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 30px;
+  padding: 10px 20px;
   margin-bottom: 10px;
 }
 
@@ -111,5 +157,15 @@ export default {
 }
 .item:nth-of-type(4n) {
   background: #508ca9;
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
 }
 </style>
