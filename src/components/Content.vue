@@ -14,6 +14,11 @@
         <div class="data">{{ careCnt }}명</div>
       </div>
       <div class="item">
+        <div class="label">누적 검사 수</div>
+        <div class="data">{{ accExamCnt }}건</div>
+      </div>
+
+      <div class="item">
         <div class="label">누적 확진률</div>
         <div class="data">{{ accDefRate }}%</div>
       </div>
@@ -45,6 +50,7 @@ export default {
       date: "",
       compDeathCnt: 0,
       compDecideCnt: 0,
+      accExamCnt: 0,
     };
   },
   methods: {
@@ -86,6 +92,7 @@ export default {
       this.careCnt = todayData.careCnt.toLocaleString();
       this.deathCnt = todayData.deathCnt.toLocaleString();
       this.decideCnt = todayData.decideCnt.toLocaleString();
+      this.accExamCnt = todayData.accExamCnt.toLocaleString();
       this.date = dayjs(todayData.stateDt.toString()).format(
         "YYYY년 MM월 DD일"
       );
@@ -146,16 +153,19 @@ export default {
   margin-bottom: 10px;
 }
 
-.item:nth-of-type(4n-3) {
+.item:nth-of-type(5n-4) {
   background: #f48032;
 }
-.item:nth-of-type(4n-2) {
+.item:nth-of-type(5n-3) {
   background: #ff7475;
 }
-.item:nth-of-type(4n-1) {
+.item:nth-of-type(5n-2) {
   background: #279d87;
 }
-.item:nth-of-type(4n) {
+.item:nth-of-type(5n-1) {
+  background: #9d8aca;
+}
+.item:nth-of-type(5n) {
   background: #508ca9;
 }
 
