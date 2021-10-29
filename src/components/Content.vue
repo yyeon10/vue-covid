@@ -60,7 +60,7 @@ export default {
         .subtract(1, "day")
         .format("YYYYMMDD");
 
-      let url = "/openapi/service/rest/Covid19/getCovid19InfStateJson"; /*URL*/
+      let url = "http://openapi.data.go.kr/openapi/service/rest/Covid19/getCovid19InfStateJson"; /*URL*/
       let queryParams =
         "?" +
         encodeURIComponent("serviceKey") +
