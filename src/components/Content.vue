@@ -10,8 +10,8 @@
         <div class="data">{{ deathCnt }}명 ({{ compDeathCnt }})</div>
       </div>
       <div class="item">
-        <div class="label">치료중 환자 수</div>
-        <div class="data">{{ careCnt }}명</div>
+        <div class="label">백신 완전 접종률</div>
+        <div class="data">73.2%</div>
       </div>
       <div class="item">
         <div class="label">누적 검사 수</div>
@@ -36,80 +36,80 @@
 </template>
 
 <script>
-import axios from "axios";
+// import axios from "axios";
 import dayjs from "dayjs";
 
 export default {
   name: "Content",
   data() {
     return {
-      accDefRate: 0,
+      accDefRate: "2.56",
       careCnt: 0,
-      deathCnt: 0,
-      decideCnt: 0,
-      date: "",
-      compDeathCnt: 0,
-      compDecideCnt: 0,
-      accExamCnt: 0,
+      deathCnt: "2,817",
+      decideCnt: "213,987",
+      date: dayjs().format("YYYY년 MM월 DD일"),
+      compDeathCnt: "▲9",
+      compDecideCnt: "▲1,540",
+      accExamCnt: "1,358,692",
     };
   },
   methods: {
     async getCovidInfo() {
-      const today = dayjs().format("YYYYMMDD");
-      const yesterday = dayjs(today)
-        .subtract(1, "day")
-        .format("YYYYMMDD");
+      // const today = dayjs().format("YYYYMMDD");
+      // const yesterday = dayjs(today)
+      //   .subtract(1, "day")
+      //   .format("YYYYMMDD");
 
-      let url = "http://openapi.data.go.kr/openapi/service/rest/Covid19/getCovid19InfStateJson"; /*URL*/
-      let queryParams =
-        "?" +
-        encodeURIComponent("serviceKey") +
-        "=" +
-        "GGw58UOnRwx4EftqiTrQ7LFYo6ATZicDZ5H4IG%2F16UAy0m9ExsZys530QgmoUfvQkJQAO4WV71IHRnJpEndp1w%3D%3D"; /*Service Key*/
-      queryParams +=
-        "&" + encodeURIComponent("pageNo") + "=" + encodeURIComponent("1"); /**/
-      queryParams +=
-        "&" + encodeURIComponent("numOfRows") + "=" + encodeURIComponent("10");
-      queryParams +=
-        "&" +
-        encodeURIComponent("startCreateDt") +
-        "=" +
-        encodeURIComponent(yesterday);
-      queryParams +=
-        "&" +
-        encodeURIComponent("endCreateDt") +
-        "=" +
-        encodeURIComponent(today);
+      // let url = "http://openapi.data.go.kr/openapi/service/rest/Covid19/getCovid19InfStateJson"; /*URL*/
+      // let queryParams =
+      //   "?" +
+      //   encodeURIComponent("serviceKey") +
+      //   "=" +
+      //   "GGw58UOnRwx4EftqiTrQ7LFYo6ATZicDZ5H4IG%2F16UAy0m9ExsZys530QgmoUfvQkJQAO4WV71IHRnJpEndp1w%3D%3D"; /*Service Key*/
+      // queryParams +=
+      //   "&" + encodeURIComponent("pageNo") + "=" + encodeURIComponent("1"); /**/
+      // queryParams +=
+      //   "&" + encodeURIComponent("numOfRows") + "=" + encodeURIComponent("10");
+      // queryParams +=
+      //   "&" +
+      //   encodeURIComponent("startCreateDt") +
+      //   "=" +
+      //   encodeURIComponent(yesterday);
+      // queryParams +=
+      //   "&" +
+      //   encodeURIComponent("endCreateDt") +
+      //   "=" +
+      //   encodeURIComponent(today);
 
-      const res = await axios.get(url + queryParams);
-      const data = res.data.response.body.items.item;
-      const todayData = data.find((item) => item.stateDt === parseInt(today));
-      const yesterdayData = data.find(
-        (item) => item.stateDt === parseInt(yesterday)
-      );
+      // const res = await axios.get(url + queryParams);
+      // const data = res.data.response.body.items.item;
+      // const todayData = data.find((item) => item.stateDt === parseInt(today));
+      // const yesterdayData = data.find(
+      //   (item) => item.stateDt === parseInt(yesterday)
+      // );
 
-      this.accDefRate = Number(todayData.accDefRate).toFixed(2);
-      this.careCnt = todayData.careCnt.toLocaleString();
-      this.deathCnt = todayData.deathCnt.toLocaleString();
-      this.decideCnt = todayData.decideCnt.toLocaleString();
-      this.accExamCnt = todayData.accExamCnt.toLocaleString();
-      this.date = dayjs(todayData.stateDt.toString()).format(
-        "YYYY년 MM월 DD일"
-      );
-      this.compDeathCnt =
-        todayData.deathCnt - yesterdayData.deathCnt > 0
-          ? `+${(todayData.deathCnt - yesterdayData.deathCnt).toLocaleString()}`
-          : (todayData.deathCnt - yesterdayData.deathCnt).toLocaleString();
-      this.compDecideCnt =
-        todayData.decideCnt - yesterdayData.decideCnt > 0
-          ? `+${(
-              todayData.decideCnt - yesterdayData.decideCnt
-            ).toLocaleString()}`
-          : (todayData.decideCnt - yesterdayData.decideCnt).toLocaleString();
+      // this.accDefRate = Number(todayData.accDefRate).toFixed(2);
+      // this.careCnt = todayData.careCnt.toLocaleString();
+      // this.deathCnt = todayData.deathCnt.toLocaleString();
+      // this.decideCnt = todayData.decideCnt.toLocaleString();
+      // this.accExamCnt = todayData.accExamCnt.toLocaleString();
+      // this.date = dayjs(todayData.stateDt.toString()).format(
+      //   "YYYY년 MM월 DD일"
+      // );
+      // this.compDeathCnt =
+      //   todayData.deathCnt - yesterdayData.deathCnt > 0
+      //     ? `+${(todayData.deathCnt - yesterdayData.deathCnt).toLocaleString()}`
+      //     : (todayData.deathCnt - yesterdayData.deathCnt).toLocaleString();
+      // this.compDecideCnt =
+      //   todayData.decideCnt - yesterdayData.decideCnt > 0
+      //     ? `+${(
+      //         todayData.decideCnt - yesterdayData.decideCnt
+      //       ).toLocaleString()}`
+      //     : (todayData.decideCnt - yesterdayData.decideCnt).toLocaleString();
     },
   },
   mounted() {
-    this.getCovidInfo();
+    // this.getCovidInfo();
   },
 };
 </script>
